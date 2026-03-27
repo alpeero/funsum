@@ -137,11 +137,7 @@ body{background:#1a1a2e;display:flex;align-items:center;justify-content:center;m
 <div id="app">
 
   <div class="topbar" id="topbar" style="display:none">
-    <div style="display:flex;gap:4px">
-      <button class="lb" onclick="setLang('tr')">🇹🇷</button>
-      <button class="lb" onclick="setLang('en')">🇬🇧</button>
-      <button class="lb" onclick="setLang('ru')">🇷🇺</button>
-    </div>
+    <!-- dil butonları devre dışı -->
     <div class="score">⭐<span id="scoreNum">0</span></div>
     <div style="display:flex;gap:5px;align-items:center">
       <div class="hero-chip" id="heroChip">👧 Zara</div>
@@ -153,9 +149,7 @@ body{background:#1a1a2e;display:flex;align-items:center;justify-content:center;m
   <div class="screen active" id="s-lang">
     <img id="funsumLogo" src="" style="width:150px;height:auto;margin-bottom:4px;animation:floatA 2s ease-in-out infinite" alt="FunSum"/>
     <div style="font-size:17px;font-weight:900;color:#78350f">Dil seç / Choose language</div>
-    <button class="lang-big-btn" onclick="startWithLang('tr')"><span style="font-size:24px">🇹🇷</span> Türkçe</button>
-    <button class="lang-big-btn" onclick="startWithLang('en')"><span style="font-size:24px">🇬🇧</span> English</button>
-    <button class="lang-big-btn" onclick="startWithLang('ru')"><span style="font-size:24px">🇷🇺</span> Русский</button>
+    <button class="lang-big-btn" onclick="startWithLang('tr')" style="width:240px;justify-content:center;font-size:20px">🚀 Başla!</button>
   </div>
 
   <!-- CHAR -->
@@ -597,10 +591,43 @@ function renderQCard(q){
 
 /* GAME */
 function genPool(op,lvl){
-  const mx=Math.min(3+lvl*2,20);const pool=[];
-  if(op==='add'){for(let a=1;a<=mx;a++)for(let b=1;b<=mx;b++)pool.push({a,b,ans:a+b,sym:'+'});}
-  else if(op==='sub'){for(let a=2;a<=mx;a++)for(let b=1;b<a;b++)pool.push({a,b,ans:a-b,sym:'−'});}
-  else{const d=[2,3,4,5],mx2=Math.min(5,Math.floor(mx/2));d.forEach(b=>{for(let ans=1;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});}
+  const pool=[];
+  // Son 2 seviye (8,9) çok daha zor — 20+ sayılar
+  if(lvl>=8){
+    if(op==='add'){
+      // 15-30 arası toplama: 19+12, 23+15 gibi
+      for(let a=12;a<=30;a++)for(let b=10;b<=25;b++){
+        if(a+b>=25 && a+b<=55) pool.push({a,b,ans:a+b,sym:'+'});
+      }
+    } else if(op==='sub'){
+      // 20-50 arası çıkarma
+      for(let a=20;a<=50;a++)for(let b=10;b<a;b++){
+        if(a-b>=5) pool.push({a,b,ans:a-b,sym:'−'});
+      }
+    } else {
+      // Bölme: büyük çarpım tablosu
+      const d=[3,4,5,6,7];const mx2=8;
+      d.forEach(b=>{for(let ans=4;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});
+    }
+  } else if(lvl>=6){
+    // Seviye 6-7: orta zorluk 10-20 arası
+    if(op==='add'){
+      for(let a=8;a<=20;a++)for(let b=5;b<=18;b++){
+        if(a+b>=15 && a+b<=35) pool.push({a,b,ans:a+b,sym:'+'});
+      }
+    } else if(op==='sub'){
+      for(let a=10;a<=30;a++)for(let b=5;b<a;b++)pool.push({a,b,ans:a-b,sym:'−'});
+    } else {
+      const d=[2,3,4,5],mx2=7;
+      d.forEach(b=>{for(let ans=3;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});
+    }
+  } else {
+    // Seviye 0-5: normal
+    const mx=Math.min(3+lvl*2,15);
+    if(op==='add'){for(let a=1;a<=mx;a++)for(let b=1;b<=mx;b++)pool.push({a,b,ans:a+b,sym:'+'});}
+    else if(op==='sub'){for(let a=2;a<=mx;a++)for(let b=1;b<a;b++)pool.push({a,b,ans:a-b,sym:'−'});}
+    else{const d=[2,3,4,5],mx2=Math.min(5,Math.floor(mx/2));d.forEach(b=>{for(let ans=1;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});}
+  }
   return shuf(pool.filter(q=>!usedQ.has(`${q.a}${q.sym}${q.b}`)));
 }
 function makeQ(e){
