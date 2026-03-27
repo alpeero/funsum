@@ -204,7 +204,7 @@ body{background:#1a1a2e;display:flex;align-items:center;justify-content:center;m
     <div class="op-grid">
       <button class="op-btn" onclick="startOp('add')">➕<div class="op-label" id="lAdd">Toplama</div></button>
       <button class="op-btn" onclick="startOp('sub')">➖<div class="op-label" id="lSub">Çıkarma</div></button>
-      <button class="op-btn" onclick="startOp('div')">➗<div class="op-label" id="lDiv">Bölme</div></button>
+      <button class="op-btn" onclick="startOp('mul')">✖️<div class="op-label" id="lMul">Çarpma</div></button>
       <button class="op-btn" onclick="startOp('mix')">🔀<div class="op-label" id="lMix">Karışık</div></button>
     </div>
   </div>
@@ -384,12 +384,12 @@ const HINTS=[
   {tr:["🌟 Son parça!","Evren! ✨","Bu son adım! 🏆","Harika! 🌌"],en:["🌟 Last!","Universe! ✨","Last step! 🏆","Amazing! 🌌"],ru:["🌟 Последняя!","Вселенная! ✨","Последний! 🏆","Удивительно! 🌌"]}
 ];
 const TX={
-  tr:{opTitle:"Ne yapmak istiyorsun?",opAdd:"Toplama",opSub:"Çıkarma",opDiv:"Bölme",opMix:"Karışık",
+  tr:{opTitle:"Ne yapmak istiyorsun?",opAdd:"Toplama",opSub:"Çıkarma",opMul:"Çarpma",opMix:"Karışık",
       ok:["Süper! 🎉","Bravo! ⭐","Harika! 🌟","Aferin! 💪","Mükemmel! 🏆"],
       no:["Tekrar dene! 💪","Olmadı! 😊","Neredeyse! 🤔","Bir daha! 🎯"],
       rTitle:(s,t)=>s>=t?"Mükemmelsin! 🏆":s>=t*.6?"Harika! 🌟":"Devam! 💪",
       rSub:(s,t)=>`${s}/${t}`,play:"🚀 Devam",
-      hint:{add:"topluyoruz ➕",sub:"çıkarıyoruz ➖",div:"bölüyoruz ➗"},
+      hint:{add:"topluyoruz ➕",sub:"çıkarıyoruz ➖",mul:"çarpıyoruz ✖️"},
       go:(n)=>["Hadi "+n+"! 🤔","Düşün! 💭","Hazır? 🎯","Yaparsın! 💪"][rnd(0,3)],
       next:"▶ İleri",play2:"🎮 Oyna!",lvl:(n)=>`Seviye ${n}`,
       charTitle:"Kahramanını seç!",girlDesc:"Yıldız kaşifi ✨",boyDesc:"Uzay pilotu 🚀",
@@ -400,12 +400,12 @@ const TX={
       videoTitle:(n)=>`${n}'in Macerası! 🌟`,videoSubtitle:"Tüm hikayeni izle!",
       videoHint:"Videoyu izledikten sonra tekrar oynayabilirsin!",
       videoRestart:"🔄 Tekrar Oyna",videoComingSoon:"Yakında geliyor! 🚀"},
-  en:{opTitle:"What do you want?",opAdd:"Addition",opSub:"Subtraction",opDiv:"Division",opMix:"Mix",
+  en:{opTitle:"What do you want?",opAdd:"Addition",opSub:"Subtraction",opMul:"Multiplication",opMix:"Mix",
       ok:["Super! 🎉","Bravo! ⭐","Amazing! 🌟","Well done! 💪","Perfect! 🏆"],
       no:["Try again! 💪","Not quite! 😊","Almost! 🤔","One more! 🎯"],
       rTitle:(s,t)=>s>=t?"You're a star! 🏆":s>=t*.6?"Great job! 🌟":"Keep going! 💪",
       rSub:(s,t)=>`${s}/${t}`,play:"🚀 Continue",
-      hint:{add:"adding ➕",sub:"subtracting ➖",div:"dividing ➗"},
+      hint:{add:"adding ➕",sub:"subtracting ➖",mul:"multiplying ✖️"},
       go:(n)=>["Go "+n+"! 🤔","Think! 💭","Ready? 🎯","You can! 💪"][rnd(0,3)],
       next:"▶ Next",play2:"🎮 Play!",lvl:(n)=>`Level ${n}`,
       charTitle:"Choose your hero!",girlDesc:"Star explorer ✨",boyDesc:"Space pilot 🚀",
@@ -416,12 +416,12 @@ const TX={
       videoTitle:(n)=>`${n}'s Adventure! 🌟`,videoSubtitle:"Watch your full story!",
       videoHint:"You can play again after watching!",
       videoRestart:"🔄 Play Again",videoComingSoon:"Coming soon! 🚀"},
-  ru:{opTitle:"Что хочешь?",opAdd:"Сложение",opSub:"Вычитание",opDiv:"Деление",opMix:"Всё вместе",
+  ru:{opTitle:"Что хочешь?",opAdd:"Сложение",opSub:"Вычитание",opMul:"Умножение",opMix:"Всё вместе",
       ok:["Супер! 🎉","Браво! ⭐","Отлично! 🌟","Молодец! 💪","Идеально! 🏆"],
       no:["Попробуй! 💪","Не совсем! 😊","Почти! 🤔","Ещё раз! 🎯"],
       rTitle:(s,t)=>s>=t?"Ты звезда! 🏆":s>=t*.6?"Хорошо! 🌟":"Продолжай! 💪",
       rSub:(s,t)=>`${s}/${t}`,play:"🚀 Продолжить",
-      hint:{add:"складываем ➕",sub:"вычитаем ➖",div:"делим ➗"},
+      hint:{add:"складываем ➕",sub:"вычитаем ➖",mul:"умножаем ✖️"},
       go:(n)=>["Давай "+n+"! 🤔","Думай! 💭","Готов? 🎯","Можешь! 💪"][rnd(0,3)],
       next:"▶ Далее",play2:"🎮 Играть!",lvl:(n)=>`Уровень ${n}`,
       charTitle:"Выбери героя!",girlDesc:"Исследователь ✨",boyDesc:"Пилот 🚀",
@@ -472,7 +472,7 @@ function startWithLang(l){lang=l;setLang(l);showScreen('s-char');}
 function updateTx(){
   const t=TX[lang];
   document.getElementById('opTitle').textContent=t.opTitle;
-  ['lAdd','lSub','lDiv','lMix'].forEach((id,i)=>document.getElementById(id).textContent=[t.opAdd,t.opSub,t.opDiv,t.opMix][i]);
+  ['lAdd','lSub','lMul','lMix'].forEach((id,i)=>document.getElementById(id).textContent=[t.opAdd,t.opSub,t.opMul,t.opMix][i]);
   document.getElementById('charTitle').textContent=t.charTitle;
   document.getElementById('girlDesc').textContent=t.girlDesc;
   document.getElementById('boyDesc').textContent=t.boyDesc;
@@ -592,25 +592,23 @@ function renderQCard(q){
 /* GAME */
 function genPool(op,lvl){
   const pool=[];
-  // Son 2 seviye (8,9) çok daha zor — 20+ sayılar
   if(lvl>=8){
+    // Seviye 8-9: ZOR
     if(op==='add'){
-      // 15-30 arası toplama: 19+12, 23+15 gibi
       for(let a=12;a<=30;a++)for(let b=10;b<=25;b++){
         if(a+b>=25 && a+b<=55) pool.push({a,b,ans:a+b,sym:'+'});
       }
     } else if(op==='sub'){
-      // 20-50 arası çıkarma
       for(let a=20;a<=50;a++)for(let b=10;b<a;b++){
         if(a-b>=5) pool.push({a,b,ans:a-b,sym:'−'});
       }
     } else {
-      // Bölme: büyük çarpım tablosu
-      const d=[3,4,5,6,7];const mx2=8;
-      d.forEach(b=>{for(let ans=4;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});
+      // Çarpma: 6-10 tablosu
+      for(let a=6;a<=10;a++)for(let b=6;b<=10;b++)
+        pool.push({a,b,ans:a*b,sym:'×'});
     }
   } else if(lvl>=6){
-    // Seviye 6-7: orta zorluk 10-20 arası
+    // Seviye 6-7: ORTA
     if(op==='add'){
       for(let a=8;a<=20;a++)for(let b=5;b<=18;b++){
         if(a+b>=15 && a+b<=35) pool.push({a,b,ans:a+b,sym:'+'});
@@ -618,15 +616,25 @@ function genPool(op,lvl){
     } else if(op==='sub'){
       for(let a=10;a<=30;a++)for(let b=5;b<a;b++)pool.push({a,b,ans:a-b,sym:'−'});
     } else {
-      const d=[2,3,4,5],mx2=7;
-      d.forEach(b=>{for(let ans=3;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});
+      // Çarpma: 4-8 tablosu
+      for(let a=4;a<=8;a++)for(let b=3;b<=8;b++)
+        pool.push({a,b,ans:a*b,sym:'×'});
     }
   } else {
-    // Seviye 0-5: normal
-    const mx=Math.min(3+lvl*2,15);
-    if(op==='add'){for(let a=1;a<=mx;a++)for(let b=1;b<=mx;b++)pool.push({a,b,ans:a+b,sym:'+'});}
-    else if(op==='sub'){for(let a=2;a<=mx;a++)for(let b=1;b<a;b++)pool.push({a,b,ans:a-b,sym:'−'});}
-    else{const d=[2,3,4,5],mx2=Math.min(5,Math.floor(mx/2));d.forEach(b=>{for(let ans=1;ans<=mx2;ans++)pool.push({a:ans*b,b,ans,sym:'÷'});});}
+    // Seviye 0-5: KOLAY
+    const mx=Math.min(3+lvl*2,12);
+    if(op==='add'){
+      for(let a=1;a<=mx;a++)for(let b=1;b<=mx;b++)pool.push({a,b,ans:a+b,sym:'+'});
+    } else if(op==='sub'){
+      for(let a=2;a<=mx;a++)for(let b=1;b<a;b++)pool.push({a,b,ans:a-b,sym:'−'});
+    } else {
+      // Çarpma: 2-5 tablosu
+      const tbls=[2,3,4,5];
+      const mxT=Math.min(2+lvl,5);
+      tbls.slice(0,Math.min(lvl+1,4)).forEach(b=>{
+        for(let a=1;a<=mxT;a++) pool.push({a,b,ans:a*b,sym:'×'});
+      });
+    }
   }
   return shuf(pool.filter(q=>!usedQ.has(`${q.a}${q.sym}${q.b}`)));
 }
@@ -634,11 +642,11 @@ function makeQ(e){
   usedQ.add(`${e.a}${e.sym}${e.b}`);
   const ws=new Set();let tries=0;
   while(ws.size<3&&tries<80){tries++;let w=e.ans+(Math.random()>.5?1:-1)*rnd(1,Math.max(4,Math.floor(e.ans*.5)+1));if(w!==e.ans&&w>=0)ws.add(w);}
-  return{text:`${e.a} ${e.sym} ${e.b} = ?`,a:e.a,b:e.b,ans:e.ans,opts:shuf([e.ans,...ws]),op:e.sym==='+'?'add':e.sym==='−'?'sub':'div'};
+  return{text:`${e.a} ${e.sym} ${e.b} = ?`,a:e.a,b:e.b,ans:e.ans,opts:shuf([e.ans,...ws]),op:e.sym==='+'?'add':e.sym==='−'?'sub':'mul'};
 }
 function startOp(op){
   qi=0;score=0;busy=false;let pool=[];
-  if(op==='mix'){['add','sub','div'].forEach(o=>{pool=pool.concat(genPool(o,gameLevel));});pool=shuf(pool);}
+  if(op==='mix'){['add','sub','mul'].forEach(o=>{pool=pool.concat(genPool(o,gameLevel));});pool=shuf(pool);}
   else pool=genPool(op,gameLevel);
   qs=pool.slice(0,QN).map(makeQ);showScreen('s-game');renderQ();
 }
